@@ -15,6 +15,17 @@ registerEditHandler(bot);
 registerDeleteHandler(bot);
 registerSummarizeHandler(bot);
 
+// Register bot commands for Telegram autocomplete suggestions
+(async () => {
+  await bot.api.setMyCommands([
+  { command: "help", description: "Show help message" },
+  { command: "pay", description: "Record a payment (name-money-explanation)" },
+  { command: "edit", description: "Edit a payment by UUID" },
+  { command: "delete", description: "Delete a payment by UUID" },
+  { command: "summarize", description: "Monthly spending summary (year-month)" },
+]);
+})();
+
 // Global error handler
 bot.catch((err) => {
   console.error("[ERROR] Bot error:", err);

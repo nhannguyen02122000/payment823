@@ -1,62 +1,27 @@
-// payment823
-// https://instantdb.com/dash?s=main&t=home&app=a5f92eab-3b4c-4ad2-86cb-18fabdda61f4
+import { i } from "@instantdb/admin";
 
-import { i } from "@instantdb/core";
-
-const graph = i.graph(
-  {
-    "$files": i.entity({
-      "path": i.any().unique().indexed(),
-      "url": i.any(),
-    }),
-    "$streams": i.entity({
-      "abortReason": i.any(),
-      "clientId": i.any().unique().indexed(),
-      "done": i.any(),
-      "size": i.any(),
-    }),
-    "$users": i.entity({
-      "email": i.any().unique().indexed(),
-      "imageURL": i.any(),
-      "type": i.any(),
-    }),
-    "payments": i.entity({
-      "createdAt": i.any(),
-      "createdBy": i.any(),
-      "deletedAt": i.any(),
-      "description": i.any(),
-      "money": i.any(),
-      "name": i.any().indexed(),
-      "updatedAt": i.any(),
-      "updatedBy": i.any(),
+const _schema = i.schema({
+  entities: {
+    payments: i.entity({
+      // The person who paid: Nhan, Thuong, or Dung
+      name: i.string().indexed(),
+      // Stored as x, displayed as x * 1000 VND
+      money: i.number(),
+      // Optional description/explanation
+      description: i.string().optional(),
+      // Telegram username who created this record
+      createdBy: i.string(),
+      // Telegram username who last updated this record
+      updatedBy: i.string(),
+      // Unix timestamp in ms when record was created
+      createdAt: i.number().indexed(),
+      // Unix timestamp in ms when record was last updated
+      updatedAt: i.number(),
+      // null = active, timestamp = soft-deleted
+      deletedAt: i.number().optional(),
     }),
   },
-  {
-    "$streams$files": {
-      "forward": {
-        "on": "$streams",
-        "has": "many",
-        "label": "$files"
-      },
-      "reverse": {
-        "on": "$files",
-        "has": "one",
-        "label": "$stream"
-      }
-    },
-    "$usersLinkedPrimaryUser": {
-      "forward": {
-        "on": "$users",
-        "has": "one",
-        "label": "linkedPrimaryUser"
-      },
-      "reverse": {
-        "on": "$users",
-        "has": "many",
-        "label": "linkedGuestUsers"
-      }
-    }
-  }
-);
+});
 
-export default graph;
+export type AppSchema = typeof _schema;
+export default _schema;

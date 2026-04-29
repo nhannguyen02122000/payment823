@@ -1,5 +1,5 @@
 import { init, id } from "@instantdb/admin";
-import _schema from "./instant.schema";
+import _schema from "../instant.schema";
 import { INSTANT_APP_ID, INSTANT_ADMIN_TOKEN, ALLOWED_NAMES } from "./config";
 
 const db = init({
