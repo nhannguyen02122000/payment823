@@ -1,11 +1,17 @@
 # CLAUDE.md
 
+@AGENTS.md
+
+Read the requirements within the @docs/APPSPEC.md, refer to this file for application requirements
+
+For InstantDB skills: use instantdb skills
+For UI/UX: use ui-ux-pro-max skills
+For clerk: use clerk or clerk-* skills
+This application will be on both mobile + desktop view. Make UI responsive
+
+All plans will be created under .claude of this project.
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
-
-Use instantdb skill whenever working with Database
-Do web search https://core.telegram.org/bots/features for Telegram bot feature
-
-**InstantDB:** When pushing schema, use `npx instant-cli@latest push schema` (not `instant-cli push schema --yes`).
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
