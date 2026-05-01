@@ -1,6 +1,6 @@
 import { verifyWebhook, WebhookEvent } from '@clerk/nextjs/webhooks';
 import { NextRequest } from 'next/server';
-import dbServer, { lookup } from '@/lib/instant-server';
+import { upsertUser, deleteUserByClerkId } from '@/lib/instant-api';
 
 export async function POST(req: NextRequest) {
   let evt: WebhookEvent;
@@ -14,20 +14,10 @@ export async function POST(req: NextRequest) {
   try {
     if (evt.type === 'user.created' || evt.type === 'user.updated') {
       const data = evt.data as { id: string; first_name: string | null; last_name: string | null; image_url: string | null; created_at?: number };
-      const clerkId = data.id;
-      const username = [data.first_name, data.last_name].filter(Boolean).join(' ') || 'Unknown';
-
-      await dbServer.transact(
-        dbServer.tx.$users[lookup('clerk_id', clerkId)].update({
-          clerk_id: clerkId,
-          username,
-          avatar_url: data.image_url ?? '',
-          created_at: data.created_at ?? Date.now(),
-        })
-      );
+      await upsertUser(data.id, data);
     } else if (evt.type === 'user.deleted') {
       const data = evt.data as { id: string };
-      await dbServer.transact(dbServer.tx.$users[lookup('clerk_id', data.id)].delete());
+      await deleteUserByClerkId(data.id);
     }
   } catch (err) {
     console.error('Webhook processing error:', err);
