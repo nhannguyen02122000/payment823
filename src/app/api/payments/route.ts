@@ -303,7 +303,6 @@ export async function POST(req: NextRequest) {
     const now = Date.now();
 
     await dbServer.transact(
-      // @ts-expect-error - admin transact create types don't match due to schema inference
       dbServer.tx.payments[uuid].create({
         uuid,
         name,
