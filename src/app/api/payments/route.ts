@@ -126,6 +126,58 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  let body: { uuid?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+
+  const { uuid } = body;
+  if (!uuid) {
+    return NextResponse.json({ error: 'uuid is required' }, { status: 400 });
+  }
+
+  try {
+    const paymentResult = await dbServer.queryOnce({ payments: {} });
+    const allPayments = paymentResult.data.payments as unknown as Array<{ uuid: string; deleted_at?: number | null }>;
+    const payment = allPayments.find((p) => p.uuid === uuid);
+
+    if (!payment) {
+      return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
+    }
+    if (payment.deleted_at != null) {
+      return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
+    }
+
+    const userResult = await dbServer.queryOnce({ $users: {} });
+    const allUsers = userResult.data.$users as unknown as Array<{ id: string; username?: string }>;
+    const currentUser = allUsers.find((u) => u.id === clerkId);
+    const username = currentUser?.username ?? 'Unknown';
+
+    const now = Date.now();
+
+    await dbServer.transact(
+      dbServer.tx.payments[uuid].update({
+        deleted_at: now,
+        updated_at: now,
+        updated_by: username,
+      })
+    );
+
+    return NextResponse.json({ uuid, deleted_at: now, updated_at: now, updated_by: username });
+  } catch (err) {
+    console.error('DELETE /api/payments error:', err);
+    return NextResponse.json({ error: 'Failed to delete payment' }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth();
   if (!clerkId) {

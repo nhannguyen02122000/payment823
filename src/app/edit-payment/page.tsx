@@ -78,6 +78,40 @@ function EditPaymentForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUuid]);
 
+  async function handleDelete() {
+    setError('');
+    setSuccess('');
+
+    if (!uuid.trim()) {
+      setError('Please load a payment first.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/payments', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? 'Failed to delete payment.');
+        return;
+      }
+
+      setName('');
+      setMoneyInput('');
+      setDescription('');
+      setSuccess('Payment deleted.');
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
@@ -249,6 +283,26 @@ function EditPaymentForm() {
             {loading ? 'Updating...' : 'Update Payment'}
           </button>
         </form>
+
+        {/* Delete */}
+        {name && (
+          <div className="flex flex-col gap-3 bg-white dark:bg-zinc-900 rounded-xl border border-red-200 dark:border-red-800 p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Delete Payment</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">This action cannot be undone.</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={loading}
+                className="h-9 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium disabled:opacity-50 transition-colors"
+              >
+                {loading ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
