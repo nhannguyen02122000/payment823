@@ -9,6 +9,7 @@ export default i.schema({
       created_at: i.number().optional(),
     }),
     payments: i.entity({
+      uuid: i.string(),
       name: i.string().indexed(),
       money: i.number(),
       description: i.string().optional(),
