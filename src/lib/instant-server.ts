@@ -1,11 +1,8 @@
-import { init } from '@instantdb/core';
-import schema from '../../instant.schema';
+import { init } from '@instantdb/admin';
 
 const dbServer = init({
   appId: process.env.INSTANT_APP_ID!,
-  schema,
-  // @ts-ignore - internal property for admin token
-  __adminToken: process.env.INSTANTDB_ADMIN_TOKEN!,
+  adminToken: process.env.INSTANTDB_ADMIN_TOKEN!,
 });
 
 export default dbServer;
