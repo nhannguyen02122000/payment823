@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ payments, total, page, limit, totalPages });
     }
 
-    // Return $users list for dropdown population
+    // Return users list for dropdown population
     const result = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
     const users = (result.$users ?? []).map((user) => ({
       id: user.id,
@@ -294,7 +294,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Get current user's username from $users (entity ID = clerkId)
+    // Get current user's username from users (entity ID = clerkId)
     const userResult = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
     const currentUser = userResult.$users.find((u) => u.id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
