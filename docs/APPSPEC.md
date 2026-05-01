@@ -36,6 +36,9 @@ Guide me step by step, ask me any unclear question, any set up needed or environ
       // null = active, timestamp = soft-deleted
       deleted_at: i.number().optional(),
     }),
+- All queries must be in Back-end, use INSTANTDB_ADMIN_TOKEN env variable
+- We integrated Clerk to InstantDB, use NEXT_PUBLIC_CLERK_CLIENT_NAME as clerk client name for instantDB
+- At the root folder, with instant.schema.ts and instant.perms.ts file
 
 ## 4. Features
 
