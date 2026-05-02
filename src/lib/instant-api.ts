@@ -25,8 +25,9 @@ async function upsertUser(clerkId: string, data: UserData): Promise<void> {
       })
     );
   } else {
+    const entityId = crypto.randomUUID();
     await dbServer.transact(
-      dbServer.tx.system_users[clerkId].create({
+      dbServer.tx.system_users[entityId].create({
         clerk_id: clerkId,
         username,
         avatar_url: data.image_url ?? '',

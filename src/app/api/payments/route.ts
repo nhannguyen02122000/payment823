@@ -17,6 +17,7 @@ type PaymentRow = {
 
 type UserRow = {
   id: string;
+  clerk_id?: string;
   username?: string;
   avatar_url?: string;
 };
@@ -190,7 +191,7 @@ export async function PUT(req: NextRequest) {
 
     // Get current user's username for updated_by
     const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
-    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
+    const currentUser = userResult.system_users.find((u) => u.clerk_id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const now = Date.now();
@@ -249,7 +250,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
-    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
+    const currentUser = userResult.system_users.find((u) => u.clerk_id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const now = Date.now();
@@ -294,9 +295,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Get current user's username from users (entity ID = clerkId)
+    // Get current user's username from users (lookup by clerk_id attribute)
     const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
-    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
+    const currentUser = userResult.system_users.find((u) => u.clerk_id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const uuid = crypto.randomUUID();
