@@ -8,6 +8,12 @@ export default i.schema({
       avatar_url: i.string().optional(),
       created_at: i.number().optional(),
     }),
+    system_users: i.entity({
+      clerk_id: i.string().optional(),
+      username: i.string().optional(),
+      avatar_url: i.string().optional(),
+      created_at: i.number().optional(),
+    }),
     payments: i.entity({
       uuid: i.string(),
       name: i.string().indexed(),

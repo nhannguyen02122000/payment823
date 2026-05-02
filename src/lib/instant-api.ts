@@ -7,31 +7,26 @@ type UserData = {
   created_at?: number;
 };
 
-// Upsert $users by clerk_id: update if exists, create if not
+// Upsert system_users by clerk_id: update if exists, create if not
 async function upsertUser(clerkId: string, data: UserData): Promise<void> {
   const username = [data.first_name, data.last_name].filter(Boolean).join(' ') || 'Unknown';
 
-  // Query to find existing user by clerk_id
-  // We match on entity id = clerkId since that's the identifier
-  const result = await dbServer.query({ $users: { $: { where: { clerk_id: clerkId } } } }) as {
-    $users: Array<{ id: string; clerk_id?: string }>;
+  const existingResult = await dbServer.query({ system_users: { $: { where: { clerk_id: clerkId } } } }) as {
+    system_users: Array<{ id: string; clerk_id?: string }>;
   };
 
-  const existingUser = result.$users[0];
+  const existingUser = existingResult.system_users[0];
 
   if (existingUser) {
-    // Update existing user
     await dbServer.transact(
-      dbServer.tx.$users[existingUser.id].update({
+      dbServer.tx.system_users[existingUser.id].update({
         username,
         avatar_url: data.image_url ?? '',
       })
     );
   } else {
-    // Create new user with a UUID as entity ID
-    const entityId = crypto.randomUUID();
     await dbServer.transact(
-      dbServer.tx.$users[entityId].create({
+      dbServer.tx.system_users[clerkId].create({
         clerk_id: clerkId,
         username,
         avatar_url: data.image_url ?? '',
@@ -41,21 +36,21 @@ async function upsertUser(clerkId: string, data: UserData): Promise<void> {
   }
 }
 
-// Delete $users by clerk_id
+// Delete system_users by clerk_id
 async function deleteUserByClerkId(clerkId: string): Promise<void> {
-  const result = await dbServer.query({ $users: { $: { where: { clerk_id: clerkId } } } }) as {
-    $users: Array<{ id: string; clerk_id?: string }>;
+  const result = await dbServer.query({ system_users: { $: { where: { clerk_id: clerkId } } } }) as {
+    system_users: Array<{ id: string; clerk_id?: string }>;
   };
 
-  const existingUser = result.$users[0];
+  const existingUser = result.system_users[0];
   if (existingUser) {
-    await dbServer.transact(dbServer.tx.$users[existingUser.id].delete());
+    await dbServer.transact(dbServer.tx.system_users[existingUser.id].delete());
   }
 }
 
-// Query $users
-async function queryUsers(): Promise<{ $users: Array<{ id: string; username?: string; avatar_url?: string }> }> {
-  return dbServer.query({ $users: {} }) as Promise<{ $users: Array<{ id: string; username?: string; avatar_url?: string }> }>;
+// Query system_users
+async function queryUsers(): Promise<{ system_users: Array<{ id: string; username?: string; avatar_url?: string }> }> {
+  return dbServer.query({ system_users: {} }) as Promise<{ system_users: Array<{ id: string; username?: string; avatar_url?: string }> }>;
 }
 
 export { upsertUser, deleteUserByClerkId, queryUsers };

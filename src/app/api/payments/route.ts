@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
       const effectiveUpdatedFrom = updatedFrom ? parseInt(updatedFrom, 10) : undefined;
       const effectiveUpdatedTo = updatedTo ? parseInt(updatedTo, 10) : undefined;
 
-      const result = await dbServer.query({ payments: {}, $users: {} }) as unknown as { payments: PaymentRow[] };
+      const result = await dbServer.query({ payments: {}, system_users: {} }) as unknown as { payments: PaymentRow[] };
       let filtered = result.payments.filter((p) => p.deleted_at == null);
 
       // Filter by name
@@ -135,8 +135,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Return users list for dropdown population
-    const result = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
-    const users = (result.$users ?? []).map((user) => ({
+    const result = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
+    const users = (result.system_users ?? []).map((user) => ({
       id: user.id,
       username: user.username ?? 'Unknown',
       avatar_url: user.avatar_url ?? '',
@@ -189,8 +189,8 @@ export async function PUT(req: NextRequest) {
     }
 
     // Get current user's username for updated_by
-    const userResult = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
-    const currentUser = userResult.$users.find((u) => u.id === clerkId);
+    const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
+    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const now = Date.now();
@@ -248,8 +248,8 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
     }
 
-    const userResult = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
-    const currentUser = userResult.$users.find((u) => u.id === clerkId);
+    const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
+    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const now = Date.now();
@@ -295,8 +295,8 @@ export async function POST(req: NextRequest) {
 
   try {
     // Get current user's username from users (entity ID = clerkId)
-    const userResult = await dbServer.query({ $users: {} }) as unknown as { $users: UserRow[] };
-    const currentUser = userResult.$users.find((u) => u.id === clerkId);
+    const userResult = await dbServer.query({ system_users: {} }) as unknown as { system_users: UserRow[] };
+    const currentUser = userResult.system_users.find((u) => u.id === clerkId);
     const username = currentUser?.username ?? 'Unknown';
 
     const uuid = crypto.randomUUID();

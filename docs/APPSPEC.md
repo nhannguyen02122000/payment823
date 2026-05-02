@@ -10,24 +10,24 @@ Guide me step by step, ask me any unclear question, any set up needed or environ
 ## 2. Authentication
 - We are using Clerk for authentication. It will connect with InstantDB
 - Allow user to use Google to sign in (Can skip sign up) via Clerk (guide be step by step to enable this). Do not allow other sign in or sign up methods.
-- When sign up by Google, sync the information to $users entity in InstantDB
+- When sign up by Google, sync the information to system_users entity in InstantDB
 
 ## 3. Database
-- $users:
+- system_users:
     - This entity is pre-defined in instantDB. 
     - We need to store information response by Clerk when user first sign up
     - Must have column is clerk_id, username, avatar_url, created_at
     - Can think of other column
 - payments: i.entity({
-      // The person who paid, link to username in $users
+      // The person who paid, link to username in system_users
       name: i.string().indexed(),
       // Stored as x, displayed as x * 1000 VND
       money: i.number(),
       // Optional description/explanation
       description: i.string().optional(),
-      // Telegram username who created this record, link to username in $users
+      // Telegram username who created this record, link to username in system_users
       created_by: i.string(),
-      // Telegram username who last updated this record, link to username in $users
+      // Telegram username who last updated this record, link to username in system_users
       updated_by: i.string(),
       // Unix timestamp in ms when record was created
       created_at: i.number().indexed(),
@@ -48,26 +48,26 @@ This application will be on both mobile + desktop view. Make UI responsive
 
 ### 4.1 Add payment
 User can add payment. These following information will be collected:
-- name (will be chosen from dropdown of a list with in $users in the Database)
+- name (will be chosen from dropdown of a list with in system_users in the Database)
 - money will be in the format x, save to DB x, but display to user in x*1000 (with thousand separator and VND suffix) a number input
 - description can be null, save to DB for description only
-- When adding new payment, other fields will be saved as well, a unique uuid, created_at and updated_at which are the same and are the current timestamp at the time of calling API. created_by and updated_by will be current user's username in $users entity, deleted_at will be saved default as null.
+- When adding new payment, other fields will be saved as well, a unique uuid, created_at and updated_at which are the same and are the current timestamp at the time of calling API. created_by and updated_by will be current user's username in system_users entity, deleted_at will be saved default as null.
 
 ### 4.2 Edit Payment
 User can edit an existing payment record. This will updated fields of that record in the Database.
-- name (will be chosen from dropdown of a list with in $users in the Database)
+- name (will be chosen from dropdown of a list with in system_users in the Database)
 - money will be in the format x, save to DB x, but display to user in x*1000 (with thousand separator and VND suffix) a number input
 - description can be null, save to DB for description only
 - uuid cannot be updated, it will be used to lookup for the record
 - updated_at will be updated to current timestamp at the time of calling API
-- updated_by will be updated to current user's username in $users entity, who make the API call
+- updated_by will be updated to current user's username in system_users entity, who make the API call
 - Other fields remain unchanged
 
 ### 4.3 Delete Payment
 User can delete an existing payment record. This will updated fields of that record in the Database
 - deleted_at field to the current timestamp
 - updated_at will be updated to current timestamp at the time of calling API
-- updated_by will be updated to current user's username in $users entity, who make the API call
+- updated_by will be updated to current user's username in system_users entity, who make the API call
 - Other fields remain unchanged
 
 ### 4.4 Listing Payment
@@ -105,5 +105,5 @@ User can create a summary report by monthly period within a year, user can selec
 - Then, it will calculate ${TOTAL_MONEY_SPENT} in month
 - Calculate the total number of names, then calculate how much each name should spent by ${TOTAL_MONEY_SPENT}/${THE_NUMBER_OF_NAMES}
 - Find a user with name ${ENV_USER_TO_SUMARIZE}, then summary, [name] should transfer back to ${ENV_USER_TO_SUMARIZE} or ${ENV_USER_TO_SUMARIZE} should transfer back to [name], and how much of that
-- [name] is username in $users Entity
+- [name] is username in system_users Entity
 - Display up to 2 decimal places

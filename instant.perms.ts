@@ -10,6 +10,15 @@ const perms: InstantRules = {
       delete: 'false',
     },
   },
+  system_users: {
+    bind: [],
+    allow: {
+      create: 'true',
+      view: 'true',
+      update: 'true',
+      delete: 'false',
+    },
+  },
   payments: {
     bind: [],
     allow: {
