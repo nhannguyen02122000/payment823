@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
   const monthEnd = new Date(year, month, 0, 23, 59, 59, 999).getTime();
 
   try {
-    const result = await dbServer.query({ payments: {} });
-    const allPayments = (result as unknown as { data: { payments: Payment[] } }).data.payments;
+    const result = await dbServer.query({ payments: {} }) as unknown as { payments: Payment[] };
+    const allPayments = result.payments;
 
     // Filter: not deleted, within the month
     const filtered = allPayments.filter(

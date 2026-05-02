@@ -72,10 +72,16 @@ export async function GET(req: NextRequest) {
         defaultTo = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
       }
 
-      const effectiveCreatedFrom = createdFrom ? parseInt(createdFrom, 10) : defaultFrom;
-      const effectiveCreatedTo = createdTo ? parseInt(createdTo, 10) : defaultTo;
-      const effectiveUpdatedFrom = updatedFrom ? parseInt(updatedFrom, 10) : undefined;
-      const effectiveUpdatedTo = updatedTo ? parseInt(updatedTo, 10) : undefined;
+      function parseDateTimeParam(value: string | null): number | undefined {
+        if (!value) return undefined;
+        const parsed = Date.parse(value);
+        return isNaN(parsed) ? undefined : parsed;
+      }
+
+      const effectiveCreatedFrom = parseDateTimeParam(createdFrom) ?? defaultFrom;
+      const effectiveCreatedTo = parseDateTimeParam(createdTo) ?? defaultTo;
+      const effectiveUpdatedFrom = parseDateTimeParam(updatedFrom);
+      const effectiveUpdatedTo = parseDateTimeParam(updatedTo);
 
       const result = await dbServer.query({ payments: {}, system_users: {} }) as unknown as { payments: PaymentRow[] };
       let filtered = result.payments.filter((p) => p.deleted_at == null);
