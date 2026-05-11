@@ -8,6 +8,7 @@ export interface Payment {
   updated_by: string;
   created_at: number;
   updated_at: number;
+  payment_date?: number;
 }
 
 export interface User {
