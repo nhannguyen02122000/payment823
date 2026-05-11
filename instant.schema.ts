@@ -24,6 +24,7 @@ export default i.schema({
       created_at: i.number().indexed(),
       updated_at: i.number(),
       deleted_at: i.number().optional(),
+      payment_date: i.number().optional().indexed(),
     }),
   },
   links: {},
