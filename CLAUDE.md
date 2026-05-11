@@ -11,6 +11,38 @@ This application will be on both mobile + desktop view. Make UI responsive
 
 All plans will be created under .claude of this project.
 
+## Quick Start
+
+```bash
+npm install
+npm run dev    # Dev server (default port 3000)
+npm run build  # Production build
+npm run lint   # Lint with ESLint
+```
+
+## Project Structure
+
+- `src/app/` — Next.js App Router pages and API routes
+  - `api/payments/route.ts` — CRUD for payments
+  - `api/summarize/route.ts` — Monthly summary report
+  - `api/auth/webhook/route.ts` — Clerk → InstantDB user sync
+- `src/components/` — UI components (modal, payment-form, summarize-modal, etc.)
+- `src/lib/` — Utilities (instant-api, instant-db, format-money, types)
+- `instant.schema.ts` — InstantDB schema (entities: $users, system_users, payments)
+- `instant.perms.ts` — InstantDB permission rules
+
+## Key Conventions
+
+- **Money display**: Stored as `x`, displayed as `x * 1000` VND (e.g., DB value `5` = "5,000 VND")
+- **Soft deletes only**: Payments use `deleted_at` timestamp — never hard delete; list/summarize APIs exclude deleted records
+- **InstantDB files at root**: `instant.schema.ts` and `instant.perms.ts` live at project root, not in `src/`
+- **Auth sync**: Clerk webhook creates/syncs `system_users` records on sign-in
+
+## Required ENV Variables
+
+- `INSTANTDB_ADMIN_TOKEN` — Backend InstantDB access
+- `NEXT_PUBLIC_CLERK_CLIENT_NAME` — Clerk client name for InstantDB
+
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
