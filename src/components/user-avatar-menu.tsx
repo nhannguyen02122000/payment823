@@ -57,7 +57,9 @@ export default function UserAvatarMenu() {
     return null;
   }
 
-  const initials = user.username ? user.username[0].toUpperCase() : "?";
+  const initials = (
+    user.firstName?.[0] ?? user.username?.[0] ?? "?"
+  ).toUpperCase();
   const hasImage = !!user.imageUrl;
 
   return (
@@ -67,6 +69,8 @@ export default function UserAvatarMenu() {
         onClick={() => setIsOpen((v) => !v)}
         aria-label="User menu"
         aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-controls="user-menu-dropdown"
         className="focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-full transition-opacity hover:opacity-80"
       >
         {hasImage ? (
@@ -87,6 +91,8 @@ export default function UserAvatarMenu() {
       {isOpen && (
         <div
           ref={menuRef}
+          id="user-menu-dropdown"
+          role="menu"
           className={`absolute right-0 w-44 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 ${
             flipUp ? "bottom-full mb-2" : "top-full mt-2"
           }`}
@@ -94,6 +100,7 @@ export default function UserAvatarMenu() {
           <button
             onClick={() => signOut({ redirectUrl: "/sign-in" })}
             className="w-full text-left px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+            role="menuitem"
           >
             Sign out
           </button>
