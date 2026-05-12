@@ -379,7 +379,7 @@ export default function PaymentsPage() {
                         {payment.payment_date ? (
                           <>
                             <div>{formatTimestamp(payment.payment_date)}</div>
-                            <div className="text-slate-600">{payment.updated_by}</div>
+                            <div className="text-slate-600">{payment.created_by}</div>
                           </>
                         ) : (
                           <span className="italic text-slate-600">—</span>
