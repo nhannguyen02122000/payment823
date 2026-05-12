@@ -7,6 +7,7 @@ interface Payment {
   name: string;
   money: number;
   created_at: number;
+  payment_date?: number | null;
   deleted_at?: number | null;
 }
 
@@ -41,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     // Filter: not deleted, within the month
     const filtered = allPayments.filter(
-      (p) => p.deleted_at == null && p.created_at >= monthStart && p.created_at <= monthEnd
+      (p) => p.deleted_at == null && p.payment_date != null && p.payment_date >= monthStart && p.payment_date <= monthEnd
     );
 
     // Group by name
