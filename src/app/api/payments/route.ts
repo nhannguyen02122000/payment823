@@ -282,14 +282,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: { name?: string; money?: string; description?: string };
+  let body: { name?: string; money?: string; description?: string; payment_date?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { name, money, description } = body;
+  const { name, money, description, payment_date } = body;
 
   if (!name) {
     return NextResponse.json({ error: 'name is required' }, { status: 400 });
@@ -298,6 +298,11 @@ export async function POST(req: NextRequest) {
   const moneyNum = parseInt(money ?? '', 10);
   if (isNaN(moneyNum) || moneyNum <= 0) {
     return NextResponse.json({ error: 'money must be a positive integer' }, { status: 400 });
+  }
+
+  const paymentDateMs = payment_date ? Date.parse(payment_date) : Date.now();
+  if (payment_date && isNaN(paymentDateMs)) {
+    return NextResponse.json({ error: 'payment_date must be a valid date string' }, { status: 400 });
   }
 
   try {
@@ -315,6 +320,7 @@ export async function POST(req: NextRequest) {
         name,
         money: moneyNum,
         description: description ?? null,
+        payment_date: paymentDateMs,
         created_by: username,
         updated_by: username,
         created_at: now,
@@ -328,6 +334,7 @@ export async function POST(req: NextRequest) {
         uuid,
         name,
         money: moneyNum,
+        payment_date: paymentDateMs,
         description: description ?? null,
         created_by: username,
         updated_by: username,
