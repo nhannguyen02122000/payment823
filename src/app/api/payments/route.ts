@@ -13,6 +13,7 @@ type PaymentRow = {
   created_at: number;
   updated_at: number;
   deleted_at?: number | null;
+  payment_date?: number | null;
 };
 
 type UserRow = {
@@ -162,14 +163,14 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: { uuid?: string; name?: string; money?: string; description?: string };
+  let body: { uuid?: string; name?: string; money?: string; description?: string; payment_date?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { uuid, name, money, description } = body;
+  const { uuid, name, money, description, payment_date } = body;
 
   if (!uuid) {
     return NextResponse.json({ error: 'uuid is required' }, { status: 400 });
@@ -202,15 +203,21 @@ export async function PUT(req: NextRequest) {
 
     const now = Date.now();
 
-    await dbServer.transact(
-      dbServer.tx.payments[uuid].update({
-        name,
-        money: moneyNum,
-        description: description ?? null,
-        updated_at: now,
-        updated_by: username,
-      }) as any
-    );
+    const updateData: Record<string, unknown> = {
+      name,
+      money: moneyNum,
+      description: description ?? null,
+      updated_at: now,
+      updated_by: username,
+    };
+    const parsed = Date.parse(payment_date ?? '');
+    if (payment_date !== undefined) {
+      if (isNaN(parsed)) {
+        return NextResponse.json({ error: 'payment_date must be a valid date string' }, { status: 400 });
+      }
+      updateData.payment_date = parsed;
+    }
+    await dbServer.transact(dbServer.tx.payments[uuid].update(updateData as any));
 
     return NextResponse.json({
       uuid,
@@ -219,6 +226,7 @@ export async function PUT(req: NextRequest) {
       description: description ?? null,
       updated_at: now,
       updated_by: username,
+      payment_date: (updateData.payment_date as number | undefined) ?? payment?.payment_date,
     });
   } catch (err) {
     console.error('PUT /api/payments error:', err);
