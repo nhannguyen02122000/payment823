@@ -69,6 +69,8 @@ export default function PaymentsPage() {
   const [createdFrom, setCreatedFrom] = useState(getDefaultDateRange().createdFrom);
   const [createdTo, setCreatedTo] = useState(getDefaultDateRange().createdTo);
   const [showAll, setShowAll] = useState(false);
+  const [paymentDateFrom, setPaymentDateFrom] = useState('');
+  const [paymentDateTo, setPaymentDateTo] = useState('');
 
   // Sorting
   const [sortBy, setSortBy] = useState('updated_at');
@@ -105,6 +107,8 @@ export default function PaymentsPage() {
       if (moneyMax) params.set('money_max', moneyMax);
       if (createdFrom) params.set('created_from', createdFrom);
       if (createdTo) params.set('created_to', createdTo);
+      if (paymentDateFrom) params.set('payment_date_from', paymentDateFrom);
+      if (paymentDateTo) params.set('payment_date_to', paymentDateTo);
       if (showAll) params.set('all', 'true');
 
       const res = await fetch(`/api/payments?${params}`);
@@ -117,7 +121,7 @@ export default function PaymentsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, sortBy, sortOrder, name, moneyMin, moneyMax, createdFrom, createdTo, showAll]);
+  }, [page, sortBy, sortOrder, name, moneyMin, moneyMax, createdFrom, createdTo, paymentDateFrom, paymentDateTo, showAll]);
 
   useEffect(() => {
     fetchPayments();
@@ -143,6 +147,8 @@ export default function PaymentsPage() {
     setMoneyMax('');
     setCreatedFrom('');
     setCreatedTo('');
+    setPaymentDateFrom('');
+    setPaymentDateTo('');
     setShowAll(false);
     setPage(1);
   }
@@ -154,7 +160,7 @@ export default function PaymentsPage() {
     fetchPayments();
   }
 
-  const hasFilters = name || moneyMin || moneyMax || createdFrom || createdTo || showAll;
+  const hasFilters = name || moneyMin || moneyMax || createdFrom || createdTo || paymentDateFrom || paymentDateTo || showAll;
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -279,6 +285,28 @@ export default function PaymentsPage() {
                 className="h-9 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="f-payment-date-from" className="text-xs font-medium text-slate-400">Payment Date From</label>
+              <input
+                id="f-payment-date-from"
+                type="datetime-local"
+                value={paymentDateFrom}
+                onChange={(e) => { setPaymentDateFrom(e.target.value); handleFilterChange(); }}
+                className="h-9 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="f-payment-date-to" className="text-xs font-medium text-slate-400">Payment Date To</label>
+              <input
+                id="f-payment-date-to"
+                type="datetime-local"
+                value={paymentDateTo}
+                onChange={(e) => { setPaymentDateTo(e.target.value); handleFilterChange(); }}
+                className="h-9 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
           </div>
         </div>
 
@@ -309,17 +337,22 @@ export default function PaymentsPage() {
                       Updated <SortIcon field="updated_at" sortBy={sortBy} sortOrder={sortOrder} />
                     </button>
                   </th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-400 hidden md:table-cell">
+                    <button onClick={() => handleSort('payment_date')} className="flex items-center hover:text-slate-200 cursor-pointer">
+                      Payment Date <SortIcon field="payment_date" sortBy={sortBy} sortOrder={sortOrder} />
+                    </button>
+                  </th>
                   <th className="text-center px-4 py-3 font-medium text-slate-400 w-20">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="text-center px-4 py-12 text-slate-400">Loading...</td>
+                    <td colSpan={7} className="text-center px-4 py-12 text-slate-400">Loading...</td>
                   </tr>
                 ) : payments.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center px-4 py-12 text-slate-400">No payments found.</td>
+                    <td colSpan={7} className="text-center px-4 py-12 text-slate-400">No payments found.</td>
                   </tr>
                 ) : (
                   payments.map((payment, idx) => (
@@ -341,6 +374,16 @@ export default function PaymentsPage() {
                       <td className="px-4 py-3 text-slate-500 text-xs">
                         <div>{formatTimestamp(payment.updated_at)}</div>
                         <div className="text-slate-600">{payment.updated_by}</div>
+                      </td>
+                      <td className="px-4 py-3 text-slate-500 text-xs hidden md:table-cell">
+                        {payment.payment_date ? (
+                          <>
+                            <div>{formatTimestamp(payment.payment_date)}</div>
+                            <div className="text-slate-600">{payment.updated_by}</div>
+                          </>
+                        ) : (
+                          <span className="italic text-slate-600">—</span>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-1">
