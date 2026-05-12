@@ -15,6 +15,11 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
   const [name, setName] = useState(initialValues?.name ?? '');
   const [moneyInput, setMoneyInput] = useState(initialValues ? String(initialValues.money) : '');
   const [description, setDescription] = useState(initialValues?.description ?? '');
+  const [paymentDate, setPaymentDate] = useState(
+    initialValues?.payment_date
+      ? new Date(initialValues.payment_date).toISOString().slice(0, 16)
+      : new Date().toISOString().slice(0, 16)
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -50,7 +55,7 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
       const res = await fetch('/api/payments', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, money: moneyInput, description, uuid: initialValues?.uuid }),
+        body: JSON.stringify({ name, money: moneyInput, description, payment_date: paymentDate, uuid: initialValues?.uuid }),
       });
       const data = await res.json();
 
@@ -124,6 +129,20 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
           placeholder="What was this payment for?"
           rows={3}
           className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+        />
+      </div>
+
+      {/* Payment Date */}
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="form-payment-date" className="text-sm font-medium text-slate-300">
+          Payment Date & Time
+        </label>
+        <input
+          id="form-payment-date"
+          type="datetime-local"
+          value={paymentDate}
+          onChange={(e) => setPaymentDate(e.target.value)}
+          className="w-full h-10 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
         />
       </div>
 
