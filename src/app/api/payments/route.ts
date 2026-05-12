@@ -62,6 +62,8 @@ export async function GET(req: NextRequest) {
       const createdTo = searchParams.get('created_to');
       const updatedFrom = searchParams.get('updated_from');
       const updatedTo = searchParams.get('updated_to');
+      const paymentDateFrom = searchParams.get('payment_date_from');
+      const paymentDateTo = searchParams.get('payment_date_to');
       const allParam = searchParams.get('all');
 
       // Default to current month filter if not requesting all
@@ -83,6 +85,8 @@ export async function GET(req: NextRequest) {
       const effectiveCreatedTo = parseDateTimeParam(createdTo) ?? defaultTo;
       const effectiveUpdatedFrom = parseDateTimeParam(updatedFrom);
       const effectiveUpdatedTo = parseDateTimeParam(updatedTo);
+      const effectivePaymentDateFrom = parseDateTimeParam(paymentDateFrom);
+      const effectivePaymentDateTo = parseDateTimeParam(paymentDateTo);
 
       const result = await dbServer.query({ payments: {}, system_users: {} }) as unknown as { payments: PaymentRow[] };
       let filtered = result.payments.filter((p) => p.deleted_at == null);
@@ -118,8 +122,16 @@ export async function GET(req: NextRequest) {
         filtered = filtered.filter((p) => p.updated_at <= effectiveUpdatedTo);
       }
 
+      // Filter by payment_date range
+      if (effectivePaymentDateFrom != null) {
+        filtered = filtered.filter((p) => (p.payment_date ?? p.created_at) >= effectivePaymentDateFrom);
+      }
+      if (effectivePaymentDateTo != null) {
+        filtered = filtered.filter((p) => (p.payment_date ?? p.created_at) <= effectivePaymentDateTo);
+      }
+
       // Sort
-      const validSortFields = ['name', 'money', 'created_at', 'updated_at'];
+      const validSortFields = ['name', 'money', 'created_at', 'updated_at', 'payment_date'];
       const safeSortBy = validSortFields.includes(sortBy) ? sortBy : 'updated_at';
       const safeSortOrder = sortOrder === 'asc' ? 'asc' : 'desc';
 
