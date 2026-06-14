@@ -97,16 +97,6 @@ export default function PaymentsPage() {
     fetchPayments();
   }, [fetchPayments]);
 
-  function handleSort(field: string) {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(field);
-      setSortOrder('desc');
-    }
-    setPage(1);
-  }
-
   function handleFilterApply(newFilters: FilterState) {
     setFilters(newFilters);
     setPage(1);
@@ -123,14 +113,6 @@ export default function PaymentsPage() {
     setDeletePayment(null);
     fetchPayments();
   }
-
-  const hasActiveFilters =
-    filters.name ||
-    filters.moneyMin ||
-    filters.moneyMax ||
-    filters.paymentDateFrom ||
-    filters.paymentDateTo ||
-    filters.showAll;
 
   const activeFilterChips: { label: string; key: keyof FilterState }[] = [];
   if (filters.name) activeFilterChips.push({ label: `PIC: ${filters.name}`, key: 'name' });
