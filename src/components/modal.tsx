@@ -43,7 +43,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
     >
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-stone-900/20 backdrop-blur-sm"
+        className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
