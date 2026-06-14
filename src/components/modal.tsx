@@ -43,7 +43,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
     >
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-stone-900/20 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -52,17 +52,17 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className={`relative w-full ${maxWidth} bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden focus:outline-none`}
+        className={`relative w-full ${maxWidth} bg-bg-card border border-border rounded-xl shadow-2xl overflow-hidden focus:outline-none`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
-          <h2 id="modal-title" className="text-lg font-semibold text-slate-50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h2 id="modal-title" className="text-base font-semibold text-text-primary">
             {title}
           </h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-50 hover:bg-slate-700 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-muted transition-colors cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -71,7 +71,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
         </div>
 
         {/* Content */}
-        <div className="px-6 py-5 max-h-[80vh] overflow-y-auto">
+        <div className="px-5 py-5 max-h-[80vh] overflow-y-auto">
           {children}
         </div>
       </div>
