@@ -39,7 +39,7 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
     setError('');
 
     if (!name) {
-      setError('Please select a name.');
+      setError('Please select who paid.');
       return;
     }
 
@@ -76,98 +76,89 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      {/* Name */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="form-name" className="text-sm font-medium text-slate-300">
-          PIC (Person in Charge)
-        </label>
-        <select
-          id="form-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full h-10 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-        >
-          <option value="">Select a user...</option>
-          {users.map((u) => (
-            <option key={u.id} value={u.username}>
-              {u.username}
-            </option>
-          ))}
-        </select>
+      {/* Section 1: Who paid? */}
+      <div>
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-2">Who paid?</p>
+        <div className="flex flex-wrap gap-2">
+          {users.map((u) => {
+            const selected = name === u.username;
+            return (
+              <button
+                key={u.id}
+                type="button"
+                onClick={() => setName(u.username)}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                  selected
+                    ? 'bg-accent text-white'
+                    : 'bg-bg-muted text-text-secondary hover:bg-border'
+                }`}
+              >
+                {u.username}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Money */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="form-money" className="text-sm font-medium text-slate-300">
-          Amount of Money
-        </label>
+      {/* Section 2: How much? */}
+      <div>
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-2">
+          How much? <span className="font-normal text-text-muted">(× 1000 VND)</span>
+        </p>
         <input
-          id="form-money"
           type="number"
           min="1"
           step="1"
           value={moneyInput}
           onChange={(e) => setMoneyInput(e.target.value)}
           placeholder="e.g. 50"
-          className="w-full h-10 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full h-10 px-3 rounded-lg border border-border-strong bg-bg-muted text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent"
         />
-        <p className="text-xs text-slate-500">Enter amount (e.g. 50 = 50,000 VND)</p>
         {moneyDisplay && (
-          <p className="text-sm font-medium text-slate-200">= {moneyDisplay}</p>
+          <p className="text-sm font-semibold text-accent mt-1.5">= {moneyDisplay}</p>
         )}
       </div>
 
-      {/* Description */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="form-description" className="text-sm font-medium text-slate-300">
-          Description <span className="text-slate-500 font-normal">(optional)</span>
-        </label>
+      {/* Section 3: Details */}
+      <div>
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-2">Details</p>
         <textarea
-          id="form-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="What was this payment for?"
-          rows={3}
-          className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+          placeholder="Description (optional)"
+          rows={2}
+          className="w-full px-3 py-2.5 rounded-lg border border-border-strong bg-bg-muted text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent resize-none"
         />
-      </div>
-
-      {/* Payment Date */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="form-payment-date" className="text-sm font-medium text-slate-300">
-          Payment Date & Time
-        </label>
         <input
-          id="form-payment-date"
           type="datetime-local"
           value={paymentDate}
           onChange={(e) => setPaymentDate(e.target.value)}
-          className="w-full h-10 px-3 rounded-lg border border-slate-600 bg-slate-700 text-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full h-10 px-3 rounded-lg border border-border-strong bg-bg-muted text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent mt-3"
         />
       </div>
 
       {/* Error */}
       {error && (
-        <p className="text-sm text-red-400 bg-red-900/20 rounded-lg px-3 py-2 border border-red-800">
+        <p className="text-sm text-danger bg-danger/10 rounded-lg px-3 py-2 border border-danger/20">
           {error}
         </p>
       )}
 
       {/* Actions */}
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 h-10 rounded-lg border border-slate-600 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors cursor-pointer"
+          className="flex-1 h-11 rounded-lg bg-bg-muted text-text-secondary text-sm font-semibold hover:bg-border transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 h-10 rounded-lg bg-amber-500 text-black text-sm font-semibold hover:bg-amber-400 disabled:opacity-50 transition-colors cursor-pointer"
+          className="flex-1 h-11 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover disabled:opacity-50 transition-colors"
         >
-          {loading ? (isEdit ? 'Updating...' : 'Adding...') : (isEdit ? 'Update Payment' : 'Add Payment')}
+          {loading ? (isEdit ? 'Updating...' : 'Adding...') : (isEdit ? 'Update' : 'Save')}
         </button>
       </div>
     </form>
