@@ -44,6 +44,15 @@ export default function FilterBottomSheet({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   function handleApply() {
@@ -64,7 +73,7 @@ export default function FilterBottomSheet({
       <div className="absolute inset-0 bg-stone-900/20 backdrop-blur-sm" />
 
       {/* Sheet */}
-      <div className="relative w-full max-w-md bg-bg-card border-t border-border rounded-t-xl p-5 pb-8">
+      <div role="dialog" aria-modal="true" aria-label="Filters" className="relative w-full max-w-md bg-bg-card border-t border-border rounded-t-xl p-5 pb-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-semibold text-text-primary">Filters</h2>
@@ -82,8 +91,9 @@ export default function FilterBottomSheet({
         <div className="flex flex-col gap-4">
           {/* Person */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wide">Person</label>
+            <label htmlFor="filter-person" className="text-xs font-semibold text-text-muted uppercase tracking-wide">Person</label>
             <select
+              id="filter-person"
               value={filters.name}
               onChange={(e) => setFilters({ ...filters, name: e.target.value })}
               className="w-full h-10 px-3 rounded-lg border border-border-strong bg-bg-muted text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent"
