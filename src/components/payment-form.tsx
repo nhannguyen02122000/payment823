@@ -87,6 +87,7 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
                 key={u.id}
                 type="button"
                 onClick={() => setName(u.username)}
+                aria-pressed={selected}
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
                   selected
                     ? 'bg-accent text-white'
@@ -112,6 +113,7 @@ export default function PaymentForm({ initialValues, onSuccess, onClose }: Payme
           value={moneyInput}
           onChange={(e) => setMoneyInput(e.target.value)}
           placeholder="e.g. 50"
+          aria-label="Amount"
           className="w-full h-10 px-3 rounded-lg border border-border-strong bg-bg-muted text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-accent"
         />
         {moneyDisplay && (
