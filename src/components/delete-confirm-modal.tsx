@@ -43,29 +43,29 @@ export default function DeleteConfirmModal({ payment, onClose, onDeleted }: Dele
   return (
     <Modal isOpen={!!payment} onClose={onClose} title="Delete Payment" maxWidth="max-w-sm">
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-slate-300">Are you sure you want to delete this payment?</p>
+        <p className="text-sm text-text-secondary">Are you sure you want to delete this payment?</p>
 
         {payment && (
-          <div className="bg-slate-700/50 rounded-lg p-4 space-y-1.5">
+          <div className="bg-bg-muted rounded-lg p-4 space-y-1.5">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">PIC</span>
-              <span className="text-slate-200 font-medium">{payment.name}</span>
+              <span className="text-text-muted">PIC</span>
+              <span className="text-text-primary font-medium">{payment.name}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Amount</span>
-              <span className="text-slate-200 font-medium">{formatMoney(payment.money)}</span>
+              <span className="text-text-muted">Amount</span>
+              <span className="text-text-primary font-medium">{formatMoney(payment.money)}</span>
             </div>
             {payment.description && (
               <div className="flex flex-col gap-0.5 text-sm">
-                <span className="text-slate-400">Description</span>
-                <span className="text-slate-200">{payment.description}</span>
+                <span className="text-text-muted">Description</span>
+                <span className="text-text-primary">{payment.description}</span>
               </div>
             )}
           </div>
         )}
 
         {error && (
-          <p className="text-sm text-red-400 bg-red-900/20 rounded-lg px-3 py-2 border border-red-800">
+          <p className="text-sm text-danger bg-danger/10 rounded-lg px-3 py-2 border border-danger/20">
             {error}
           </p>
         )}
@@ -74,7 +74,7 @@ export default function DeleteConfirmModal({ payment, onClose, onDeleted }: Dele
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 h-10 rounded-lg border border-slate-600 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors cursor-pointer"
+            className="flex-1 h-10 rounded-lg border border-border-strong text-text-secondary text-sm font-medium hover:bg-border transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -82,7 +82,7 @@ export default function DeleteConfirmModal({ payment, onClose, onDeleted }: Dele
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            className="flex-1 h-10 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-500 disabled:opacity-50 transition-colors cursor-pointer"
+            className="flex-1 h-10 rounded-lg bg-danger text-white text-sm font-semibold hover:bg-danger-hover disabled:opacity-50 transition-colors cursor-pointer"
           >
             {loading ? 'Deleting...' : 'Delete'}
           </button>
