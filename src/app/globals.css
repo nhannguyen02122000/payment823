@@ -15,6 +15,9 @@
   --danger: #dc2626;
   --danger-hover: #b91c1c;
 
+  /* Layout */
+  --tab-bar-height: 80px;
+
   /* Border radius */
   --radius-sm: 6px;
   --radius-md: 8px;

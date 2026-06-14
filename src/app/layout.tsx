@@ -12,7 +12,6 @@ const instrumentSans = Instrument_Sans({
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  weight: "400",
   variable: "--font-instrument-serif",
   display: "swap",
 });
@@ -34,7 +33,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-bg text-text-primary">
         <ClerkProvider>
-          <main className="flex-1 pb-20">{children}</main>
+          <main className="flex-1 pb-[var(--tab-bar-height,80px)]">{children}</main>
           <BottomTabBar />
         </ClerkProvider>
       </body>
