@@ -80,7 +80,7 @@ export default function UserAvatarMenu() {
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-slate-700"
           />
         ) : (
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-amber-500 flex items-center justify-center">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-accent flex items-center justify-center">
             <span className="text-white font-semibold text-sm sm:text-base">
               {initials}
             </span>
@@ -93,13 +93,13 @@ export default function UserAvatarMenu() {
           ref={menuRef}
           id="user-menu-dropdown"
           role="menu"
-          className={`absolute right-0 w-44 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 ${
+          className={`absolute right-0 w-44 bg-bg-card border border-border rounded-lg shadow-xl py-1 ${
             flipUp ? "bottom-full mb-2" : "top-full mt-2"
           }`}
         >
           <button
             onClick={() => signOut({ redirectUrl: "/sign-in" })}
-            className="w-full text-left px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+            className="w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-bg-muted transition-colors"
             role="menuitem"
           >
             Sign out
