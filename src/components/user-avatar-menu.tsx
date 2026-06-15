@@ -48,7 +48,7 @@ export default function UserAvatarMenu() {
   if (!isLoaded) {
     return (
       <div className="fixed top-4 right-4 z-50">
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-700 animate-pulse" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-bg-muted animate-pulse" />
       </div>
     );
   }
@@ -71,13 +71,13 @@ export default function UserAvatarMenu() {
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-controls="user-menu-dropdown"
-        className="focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-full transition-opacity hover:opacity-80"
+        className="focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg rounded-full transition-opacity hover:opacity-80"
       >
         {hasImage ? (
           <img
             src={user.imageUrl}
             alt="User avatar"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-slate-700"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-border"
           />
         ) : (
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-accent flex items-center justify-center">
