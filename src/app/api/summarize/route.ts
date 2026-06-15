@@ -77,9 +77,11 @@ export async function GET(req: NextRequest) {
       if (Math.abs(diff) < 0.001) continue; // skip if essentially equal
 
       if (diff > 0) {
-        transfers.push({ from: person, to: envUser, amount: parseFloat(diff.toFixed(2)) });
+        // Person overpaid — they should receive money from the person who underpaid
+        transfers.push({ from: envUser, to: person, amount: parseFloat(diff.toFixed(2)) });
       } else {
-        transfers.push({ from: envUser, to: person, amount: parseFloat(Math.abs(diff).toFixed(2)) });
+        // Person underpaid — they should pay the person who overpaid
+        transfers.push({ from: person, to: envUser, amount: parseFloat(Math.abs(diff).toFixed(2)) });
       }
     }
 
